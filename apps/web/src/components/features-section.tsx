@@ -10,7 +10,7 @@ export function FeaturesSection() {
       ),
       title: "Instant Matching",
       description:
-        "Our AI algorithm analyzes your business profile and instantly matches you with relevant funding opportunities from our network of 500+ lenders.",
+        "Our AI algorithm analyzes your business profile and instantly matches you with relevant funding opportunities",
     },
     {
       icon: (
@@ -23,9 +23,9 @@ export function FeaturesSection() {
           />
         </svg>
       ),
-      title: "Risk Assessment",
+      title: "Save Time",
       description:
-        "Advanced risk profiling helps lenders understand your business better, increasing approval rates by up to 40% compared to traditional applications.",
+        "Skip the hassle of searching across multiple sites — find all relevant funding sources in one place.",
     },
     {
       icon: (
@@ -38,9 +38,9 @@ export function FeaturesSection() {
           />
         </svg>
       ),
-      title: "Competitive Rates",
+      title: "Stay Updated",
       description:
-        "Access exclusive funding options with competitive interest rates and flexible terms tailored specifically for small and medium enterprises.",
+        "Keep track of the latest funding opportunities, including grants, schemes, and financing options, so your business never misses out.",
     },
   ]
 
@@ -49,7 +49,7 @@ export function FeaturesSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            {"Why SMEs Choose FundMatch"}
+            {"Why SMEs Choose MYFundFinder"}
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
             {
