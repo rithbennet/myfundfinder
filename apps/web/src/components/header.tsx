@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Button } from "./ui/button"
+import Link from "next/link"
 
 export function Header() {
   return (
@@ -14,6 +15,18 @@ export function Header() {
 
           <nav className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
+              <Link
+                href="/"
+                className="text-muted-foreground hover:text-foreground px-3 py-2 text-sm font-medium transition-colors"
+              >
+                Home
+              </Link>
+              <Link
+                href="/chatbot"
+                className="text-muted-foreground hover:text-foreground px-3 py-2 text-sm font-medium transition-colors"
+              >
+                🤖 AI Assistant
+              </Link>
               <a
                 href="#how-it-works"
                 className="text-muted-foreground hover:text-foreground px-3 py-2 text-sm font-medium transition-colors"
