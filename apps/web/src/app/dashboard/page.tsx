@@ -34,7 +34,7 @@ export default function DashboardPage() {
             <h2 className="mb-4 text-xl font-semibold">Protected Content</h2>
             <p className="text-gray-600">
               This page is only accessible to authenticated users.
-              You can only see this because you're signed in!
+              You can only see this because you&apos;re signed in!
             </p>
 
             <div className="mt-6">
