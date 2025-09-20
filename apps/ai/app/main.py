@@ -13,4 +13,4 @@ def test_grants():
     with engine.connect() as conn:
         # Run simple query test
         result = conn.execute(sqlalchemy.text("SELECT 1+1 AS calc"))
-        return {"db_result": [dict(row) for row in result]}
+    return {"db_result": [dict(row._mapping) for row in result]}

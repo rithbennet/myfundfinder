@@ -18,4 +18,4 @@ if not DATABASE_URL:
     raise RuntimeError("Please add DATABASE_URL to your .env file")
 
 engine = create_engine(DATABASE_URL)
-metadata = MetaData()
+metadata = MetaData(schema="public")
