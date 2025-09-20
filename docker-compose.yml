@@ -1,6 +1,7 @@
 services:
   database:
-    image: postgres:latest
+    image: ankane/pgvector:latest
+    container_name: postgres_db
     ports:
       - "15432:5432"
     environment:
@@ -10,11 +11,12 @@ services:
     networks:
       - postgres-network
     volumes:
-      - ./db-data/:/var/lib/postgresql/data/
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db_data:/var/lib/postgresql/data
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   pgadmin:
     image: dpage/pgadmin4
+    container_name: pgadmin
     ports:
       - "15433:80"
     environment:
@@ -25,8 +27,12 @@ services:
     networks:
       - postgres-network
     volumes:
-      - ./pgadmin-data/:/var/lib/pgadmin/
+      - pgadmin_data:/var/lib/pgadmin
 
 networks:
   postgres-network:
     driver: bridge
+
+volumes:
+  db_data:
+  pgadmin_data:
