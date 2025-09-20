@@ -6,31 +6,32 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // AWS Aurora PostgreSQL configuration
+  // For Aurora, consider enabling these optimizations:
+  // directUrl = env("DIRECT_URL") // For migrations
+  // relationMode = "prisma" // If using Aurora Serverless
 }
 
 model User {
-  id            String          @id @default(cuid())
-  email         String          @unique
-  name          String?
-  createdAt     DateTime        @default(now())
-  company       CompanyProfile?
-  emailVerified Boolean         @default(false)
-  image         String?
-  updatedAt     DateTime        @default(now()) @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-
-  @@map("user")
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  company   CompanyProfile?
+  
+  @@map("users") // Explicit table naming for Aurora
 }
 
 model CompanyProfile {
-  id       String  @id @default(cuid())
-  userId   String  @unique
-  sector   String
-  size     String
-  region   String?
-  keywords String?
-  user     User    @relation(fields: [userId], references: [id])
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  sector    String
+  size      String
+  region    String?
+  keywords  String?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("company_profiles")
 }
 
 model Grant {
@@ -40,50 +41,26 @@ model Grant {
   url         String
   sector      String?
   deadline    DateTime?
-  createdAt   DateTime  @default(now())
+  amount      String?
+  eligibility String?
+  provider    String?
+  embedding   String?  // For Aurora, consider using pgvector extension
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([sector])
+  @@index([deadline])
+  @@index([provider])
+  @@map("grants")
 }
 
-model Session {
-  id        String   @id
-  expiresAt DateTime
-  token     String
+model ChatSession {
+  id        String   @id @default(cuid())
+  userId    String?
+  messages  Json[]   // Array of chat messages
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([token])
-  @@map("session")
-}
-
-model Account {
-  id                    String    @id
-  accountId             String
-  providerId            String
-  userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
-  scope                 String?
-  password              String?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-
-  @@map("account")
-}
-
-model Verification {
-  id         String   @id
-  identifier String
-  value      String
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
-
-  @@map("verification")
+  
+  @@index([userId])
+  @@map("chat_sessions")
 }
