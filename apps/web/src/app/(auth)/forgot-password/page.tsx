@@ -16,7 +16,7 @@ export default function ForgotPasswordPage() {
           <CardHeader className="space-y-2 text-center">
             <CardTitle className="text-2xl font-semibold text-balance">Reset your password</CardTitle>
             <CardDescription className="text-muted-foreground text-balance">
-              Enter your email address and we'll send you a verification code
+              Enter your email address and we&apos;ll send you a verification code
             </CardDescription>
           </CardHeader>
 

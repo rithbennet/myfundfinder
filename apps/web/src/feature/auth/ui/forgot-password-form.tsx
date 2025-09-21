@@ -117,15 +117,14 @@ export function ForgotPasswordForm() {
                 {[1, 2, 3, 4, 5].map((level) => (
                   <div
                     key={level}
-                    className={`h-1 flex-1 rounded-full ${
-                      passwordStrength.score >= level
+                    className={`h-1 flex-1 rounded-full ${passwordStrength.score >= level
                         ? passwordStrength.score <= 2
                           ? "bg-red-500"
                           : passwordStrength.score <= 3
                             ? "bg-yellow-500"
                             : "bg-green-500"
                         : "bg-muted"
-                    }`}
+                      }`}
                   />
                 ))}
               </div>
@@ -186,7 +185,7 @@ export function ForgotPasswordForm() {
               ) : (
                 <>
                   <X className="h-3 w-3 text-red-500" />
-                  <span className="text-red-600">Passwords don't match</span>
+                  <span className="text-red-600">Passwords don&apos;t match</span>
                 </>
               )}
             </div>
@@ -195,9 +194,9 @@ export function ForgotPasswordForm() {
 
         {error && <p className="text-sm text-red-500">{error}</p>}
 
-        <Button 
-          type="submit" 
-          className="w-full" 
+        <Button
+          type="submit"
+          className="w-full"
           disabled={loading || passwordStrength.score < 3 || !passwordsMatch}
         >
           {loading ? "Resetting..." : "Reset Password"}
