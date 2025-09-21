@@ -9,8 +9,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ONBOARDING_FIELDS } from "~/lib/constants";
 import type { OnboardingFormData } from "~/types/form";
+import { useRouter } from "next/navigation";
 
 export default function OnboardingForm() {
+  const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const initialFormData = Object.fromEntries(
     ONBOARDING_FIELDS.map((f) => [f.name, ""])
@@ -76,10 +78,7 @@ export default function OnboardingForm() {
     setLoading(true);
 
     try {
-      // Replace this with actual user ID from your auth
-      const userId = "USER_ID_HERE";
-
-      const body = { ...formData, userId };
+      const body = { ...formData }; // ✅ no userId here
 
       const res = await fetch("/api/onboarding", {
         method: "POST",
@@ -97,6 +96,7 @@ export default function OnboardingForm() {
 
       alert("✅ Form submitted successfully!");
       console.log("Saved company:", data.company);
+      router.push('/');
     } catch (err) {
       console.error("Submission error:", err);
       alert("Something went wrong.");

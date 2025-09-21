@@ -4,9 +4,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { getSessionUser } from "~/lib/auth";
 
 const onboardingSchema = z.object({
-  userId: z.string(),
   companyName: z.string(),
   companyId: z.string(),
   companyType: z.string(),
@@ -24,6 +24,18 @@ const onboardingSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const user = await getSessionUser();
+  console.log("🔍 User from getSessionUser:", user);
+  
+  if (!user) {
+    console.log("❌ No user found - authentication failed");
+    return NextResponse.json(
+      { success: false, error: "User not authenticated" },
+      { status: 401 }
+    );
+  }
+  
+  console.log("✅ User authenticated:", user.id);
   try {
     const bodyRaw = await req.json();
 
@@ -41,7 +53,10 @@ export async function POST(req: NextRequest) {
     const body = onboardingSchema.parse(bodyRaw);
 
     const company = await prisma.company.create({
-      data: body,
+      data: {
+        ...body,
+        userId: user.id,
+      },
     });
 
     return NextResponse.json({ success: true, company });

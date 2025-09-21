@@ -11,7 +11,7 @@ export type OnboardingFormData = {
   shareholding: string
   industry: string
   yearsOperating: string
-  revenue: string
+  annual_revenue: string 
   employees: string
   exports: boolean
   address: string

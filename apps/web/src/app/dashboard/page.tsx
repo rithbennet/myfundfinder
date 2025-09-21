@@ -44,7 +44,16 @@ export default function DashboardPage() {
               >
                 Back to Home
               </button>
+             
             </div>
+            <div className="mt-6">
+             <button
+                onClick={() => router.push('/onboarding')}
+                className="rounded bg-blue-500 px-4 py-2 mr-2 text-white hover:bg-blue-600"
+              >
+               OnBoarding
+              </button>
+              </div>
           </div>
         </div>
       </div>

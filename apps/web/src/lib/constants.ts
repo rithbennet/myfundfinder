@@ -10,7 +10,7 @@ export const ONBOARDING_FIELDS: OnboardingField[] = [
   { name: "shareholding", label: "Shareholding Structure" },
   { name: "industry", label: "Industry & Business Activity" },
   { name: "yearsOperating", label: "Years Operating" },
-  { name: "revenue", label: "Annual Revenue" },
+  { name: "annual_revenue", label: "Annual Revenue" },
   { name: "employees", label: "Employees" },
   { name: "exports", label: "Export Status" },
   { name: "address", label: "Business Address", type: "textarea" },
