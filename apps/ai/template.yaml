@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: MyFundFinder AI API
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 1024
+    Environment:
+      Variables:
+        DATABASE_URL: !Ref DatabaseUrl
+        AWS_REGION: !Ref AWS::Region
+        S3_BUCKET_NAME: !Ref DocumentsBucket
+
+Parameters:
+  DatabaseUrl:
+    Type: String
+    Description: Aurora PostgreSQL connection string
+    NoEcho: true
+
+Resources:
+  MyFundFinderAPI:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      ImageUri: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/myfundfinder-ai:latest
+      Events:
+        ApiGateway:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+      Policies:
+        - S3FullAccessPolicy:
+            BucketName: !Ref DocumentsBucket
+        - Statement:
+          - Effect: Allow
+            Action:
+              - bedrock:InvokeModel
+            Resource: "*"
+
+  DocumentsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub myfundfinder-documents-${AWS::AccountId}
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+Outputs:
+  ApiGatewayUrl:
+    Description: API Gateway endpoint URL
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

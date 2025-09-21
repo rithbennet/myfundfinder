@@ -1,0 +1,16 @@
+{
+  "id": 5,
+  "title": "SME Automation and Digitalisation Facility (ADF)",
+  "description": "BNM facility to incentivise SMEs to automate and digitalise operations. Financing up to RM3m, tenure up to 10 years, financing rate up to 4% p.a.",
+  "sector": "SME Financing, Automation, Digitalisation",
+  "deadline": null,
+  "amount": 3000000.0,
+  "eligibility": "Malaysian SMEs with \u226551% Malaysian ownership, as defined by SME Corp. Must not use funds for refinancing.",
+  "requiredDocs": "Applications submitted directly to PFIs; supporting docs per bank\u2019s credit assessment.",
+  "agencyId": null,
+  "createdAt": "2025-09-21T12:28:15.393148Z",
+  "updatedAt": "2025-09-21T12:28:15.393148Z",
+  "s3_keys": [],
+  "funding_chunks": [],
+  "agency": null
+}

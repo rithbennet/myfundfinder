@@ -39,65 +39,35 @@ model Company {
   @@map("companies")
 }
 
-model Agency {
-  id          Int       @id @default(autoincrement())
-  name        String    @db.VarChar(255)
-  contact     String?   @db.VarChar(255)
+model Agency {  // Changed from Agency to match table
+  id          Int       @id @default(autoincrement())  // Changed from String to Int
+  name        String
+  contact     String?
   description String?
-  createdAt   DateTime  @map("created_at") @db.Timestamp(6)
-  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamp(6)
-  fundings    Funding[]
+  fundings    Funding[] // Changed from fundings to match relationship
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
   @@map("agencies")
 }
 
-model Funding {
-  id             Int              @id @default(autoincrement())
-  title          String           @db.VarChar(500)
-  description    String?
-  sector         String?          @db.VarChar(100)
-  deadline       DateTime?        @db.Timestamp(6)
-  amount         Float?
-  eligibility    String?
-  requiredDocs   String?          @map("required_docs")
-  agencyId       Int?             @map("agency_id")
-  createdAt      DateTime         @map("created_at") @db.Timestamp(6)
-  updatedAt      DateTime         @updatedAt @map("updated_at") @db.Timestamp(6)
-  s3_keys        String[]         @db.VarChar
-  funding_chunks funding_chunks[]
-  agency         Agency?          @relation(fields: [agencyId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+model Funding {  // Keep as Funding (table is fundings)
+  id           Int            @id @default(autoincrement())  // Changed from String to Int
+  title        String
+  description  String?
+  sector       String?
+  deadline     DateTime?
+  amount       Float?
+  eligibility  String?
+  requiredDocs String?        @map("required_docs")  // Changed from String[] to String
+  agencyId     Int            @map("agency_id")      // Changed from String to Int
+  s3Key        String?        @map("s3_key")         // Added missing field
+  agency       Agency         @relation(fields: [agencyId], references: [id])
+  chunks       FundingChunk[]
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
 
   @@map("fundings")
-}
-
-model alembic_version {
-  version_num String @id(map: "alembic_version_pkc") @db.VarChar(32)
-}
-
-model chat_messages {
-  id            Int           @id @default(autoincrement())
-  session_id    String        @db.VarChar
-  role          String        @db.VarChar(20)
-  content       String
-  tokens        Int?
-  created_at    DateTime      @db.Timestamp(6)
-  updated_at    DateTime      @db.Timestamp(6)
-  chat_sessions chat_sessions @relation(fields: [session_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model chat_sessions {
-  id            String          @id
-  userId        String
-  messages      Json[]
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime
-  user_id       String?         @db.VarChar
-  created_at    DateTime        @default(now()) @db.Timestamp(6)
-  updated_at    DateTime        @default(now()) @db.Timestamp(6)
-  chat_messages chat_messages[]
-  users         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
 }
 
 model funding_chunks {

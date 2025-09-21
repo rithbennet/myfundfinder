@@ -1,0 +1,16 @@
+{
+  "id": 4,
+  "title": "Malaysia Digital X-Port Grant (MDXG)",
+  "description": "Supports export-ready Malaysian tech companies to expand globally. Ceiling: up to RM1,000,000 depending on ownership structure. Duration: up to 1 year.",
+  "sector": "Technology Export, Digital Economy",
+  "deadline": null,
+  "amount": 1000000.0,
+  "eligibility": "Local-owned: \u226551% Malaysian equity, min share capital RM50k; Foreign-majority: HQ in Malaysia, min share capital RM500k. Must be in operation \u22651 year, Malaysia Digital/MSC status, \u226550% Malaysian team, generate export commercial value. Cannot owe MDEC clawbacks or be blacklisted.",
+  "requiredDocs": "Pitch deck (MDEC template), audited financial statements (latest year), board resolution for signatory, company profile, outsourcing agreements (if applicable).",
+  "agencyId": null,
+  "createdAt": "2025-09-21T12:28:15.393148Z",
+  "updatedAt": "2025-09-21T12:28:15.393148Z",
+  "s3_keys": [],
+  "funding_chunks": [],
+  "agency": null
+}

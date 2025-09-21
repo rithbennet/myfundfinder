@@ -24,7 +24,7 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_AI_API_URL: z.string().url().optional(),
   },
 
   /**
@@ -39,7 +39,7 @@ export const env = createEnv({
     COGNITO_DOMAIN: process.env.COGNITO_DOMAIN,
     COGNITO_REGION: process.env.COGNITO_REGION,
     COGNITO_USERPOOL_ID: process.env.COGNITO_USERPOOL_ID,
-    // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
+    NEXT_PUBLIC_AI_API_URL: process.env.NEXT_PUBLIC_AI_API_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

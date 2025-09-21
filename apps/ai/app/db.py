@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine, MetaData
+from sqlalchemy.orm import sessionmaker, Session
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -19,4 +20,13 @@ if not DATABASE_URL:
     raise RuntimeError("Please add DATABASE_URL to your .env file for AWS Aurora connection")
 
 engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 metadata = MetaData(schema="public")
+
+def get_db() -> Session:
+    """Database dependency for FastAPI"""
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
