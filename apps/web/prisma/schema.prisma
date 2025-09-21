@@ -1,90 +1,125 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  extensions = [pgvector(map: "vector")]
   // AWS Aurora PostgreSQL configuration
   // For Aurora, consider enabling these optimizations:
   // directUrl = env("DIRECT_URL") // For migrations
   // relationMode = "prisma" // If using Aurora Serverless
 }
 
-model chat_sessions {
-  id        String   @id @default(cuid())
-  userId    String
-  messages  Json[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
-
 model User {
-  id        String   @id // Cognito user ID (sub claim)
-  email     String   @unique
-  name      String?
-  onboarded Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  company   Company?
-  chatSessions chat_sessions[]
-  
+  id            String        @id
+  email         String        @unique
+  name          String?
+  onboarded     Boolean       @default(false)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  chatSessions  ChatSession[]
+  companies     UserCompany[]
+
   @@map("users")
 }
 
-model agency {
+model Company {
+  id               String        @id @default(cuid())
+  companyName       String
+  companyId         String       @unique
+  companyType       String
+  incorporationDate DateTime
+  shareholding      String
+  industry          String
+  yearsOperating    Int
+  annualRevenue     Float?
+  employees         Int
+  exports           Boolean
+  address           String
+  contact           String
+  taxCompliance     Boolean
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  users             UserCompany[]
+}
+
+model UserCompany {
+  userId    String
+  companyId String
+  role      String?
+
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@id([userId, companyId])
+}
+
+model ChatSession {
+  id        String       @id @default(cuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages  ChatMessage[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+model ChatMessage {
+  id          String      @id @default(cuid())
+  sessionId   String
+  session     ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role        String      // system, user, assistant
+  content     String
+  tokens      Int?
+  createdAt   DateTime @default(now())
+}
+
+model Agency {
   id          String    @id @default(cuid())
   name        String
   contact     String
   description String?
-  fundings    funding[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  fundings    Funding[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
-model Company {
-  id               String   @id @default(cuid())
-  userId           String   @unique
-  user             User     @relation(fields: [userId], references: [id])
-
-  companyName       String
-  companyId         String   @unique // SSM Reg. No.
-  companyType       String
-  incorporationDate String
-  shareholding      String
-  industry          String
-  yearsOperating    String
-  annual_revenue    String
-  employees         String
-  exports           Boolean
-  address           String
-  contact           String
-  taxCompliance     String
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-}
-
-model funding {
+model Funding {
   id           String    @id @default(cuid())
   title        String
   description  String?
   url          String
   sector       String?
   deadline     DateTime?
-  amount       String?
+  amount       Float?
   eligibility  String?
-  embedding    String?
-  requiredDocs String[]   // array of required documents
+  requiredDocs String[]
   agencyId     String
-  agency       agency     @relation(fields: [agencyId], references: [id])
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  agency       Agency    @relation(fields: [agencyId], references: [id])
+  chunks       FundingChunk[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   @@index([deadline])
   @@index([agencyId])
   @@index([sector])
+}
+
+model FundingChunk {
+  id        String   @id @default(cuid())
+  fundingId String
+  funding   Funding  @relation(fields: [fundingId], references: [id])
+  chunkText String
+
+  // pgvector column (Prisma will ignore type, but it's in DB)
+  embedding Unsupported("vector")?
+
+  pageNo    Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
