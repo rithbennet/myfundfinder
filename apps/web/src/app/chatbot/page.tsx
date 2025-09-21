@@ -3,8 +3,8 @@ import { ChatbotInterface } from "~/components/chatbot-interface"
 import { Footer } from "~/components/footer"
 
 export const metadata = {
-  title: "AI Assistant - FundMatch",
-  description: "Get personalized funding advice with our AI-powered document assistant",
+  title: "Fund Matchmaker",
+  description: "Get personalized funding recommendations with our AI-powered document assistant",
 }
 
 export default function ChatbotPage() {
@@ -14,7 +14,7 @@ export default function ChatbotPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold tracking-tight text-foreground mb-4">
-            🤖 AI Funding Assistant
+            Fund Matchmaker
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Upload your business documents and get personalized funding advice. 
