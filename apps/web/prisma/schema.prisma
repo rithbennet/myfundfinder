@@ -1,0 +1,69 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // AWS Aurora PostgreSQL configuration
+  // For Aurora, consider enabling these optimizations:
+  // directUrl = env("DIRECT_URL") // For migrations
+  // relationMode = "prisma" // If using Aurora Serverless
+}
+
+model User {
+  id        String   @id // Cognito user ID (sub claim)
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  company   CompanyProfile?
+  chatSessions ChatSession[]
+  
+  @@map("users")
+}
+
+model CompanyProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  sector    String
+  size      String
+  region    String?
+  keywords  String?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("company_profiles")
+}
+
+model Grant {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  url         String
+  sector      String?
+  deadline    DateTime?
+  amount      String?
+  eligibility String?
+  provider    String?
+  embedding   String?  // For Aurora, consider using pgvector extension
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([sector])
+  @@index([deadline])
+  @@index([provider])
+  @@map("grants")
+}
+
+model ChatSession {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages  Json[]   // Array of chat messages
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([userId])
+  @@map("chat_sessions")
+}

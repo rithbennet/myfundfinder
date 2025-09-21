@@ -1,0 +1,38 @@
+services:
+  database:
+    image: ankane/pgvector:latest
+    container_name: postgres_db
+    ports:
+      - "15432:5432"
+    environment:
+      POSTGRES_USER: mff_admin
+      POSTGRES_PASSWORD: supersecret123
+      POSTGRES_DB: mff_app
+    networks:
+      - postgres-network
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    ports:
+      - "15433:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@myfundfinder.com
+      PGADMIN_DEFAULT_PASSWORD: anothersecret456
+    depends_on:
+      - database
+    networks:
+      - postgres-network
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+networks:
+  postgres-network:
+    driver: bridge
+
+volumes:
+  db_data:
+  pgadmin_data:

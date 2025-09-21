@@ -1,0 +1,8 @@
+🚀 Starting SME RAG Chatbot...
+📁 Bucket: sme-rag-documents-1758382778
+🌐 Open your browser to: http://localhost:8081
+==================================================
+ * Serving Flask app 'chatbot_app'
+ * Debug mode: on
+Address already in use
+Port 8081 is in use by another program. Either identify and stop that program, or start the server with a different port.
