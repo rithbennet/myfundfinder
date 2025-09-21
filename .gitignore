@@ -36,6 +36,8 @@ yarn-error.log*
 .DS_Store
 *.pem
 
+
+volumes/__pycache__/
 volumes/
 
 # Python/RAG specific
@@ -58,3 +60,4 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+

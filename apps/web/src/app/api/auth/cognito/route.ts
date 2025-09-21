@@ -99,6 +99,25 @@ export async function POST(request: NextRequest) {
           // Cache user data and ensure user exists in DB
           userDataCache.set(userData.id, userData);
           await ensureUser(userData.id, userData.email);
+
+          // 🔑 set cookie for session
+          const response = NextResponse.json({
+            success: true,
+            user: userData,
+            tokens: authResult.AuthenticationResult,
+          });
+          response.cookies.set(
+            "accessToken",
+            authResult.AuthenticationResult.AccessToken,
+            {
+              httpOnly: true,
+              secure: process.env.NODE_ENV === "production",
+              sameSite: "lax",
+              path: "/",
+            },
+          );
+
+          return response;
         }
 
         return NextResponse.json({
