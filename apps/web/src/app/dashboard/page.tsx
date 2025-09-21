@@ -48,7 +48,7 @@ export default function DashboardPage() {
             </div>
             <div className="mt-6">
              <button
-                onClick={() => router.push('/onboarding')}
+                onClick={() => router.push('/dashboard/onboard')}
                 className="rounded bg-blue-500 px-4 py-2 mr-2 text-white hover:bg-blue-600"
               >
                OnBoarding

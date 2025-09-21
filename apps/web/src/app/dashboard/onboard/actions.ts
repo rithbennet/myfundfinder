@@ -1,26 +1,26 @@
 'use server'
 
-import { prisma } from '~/lib/prisma'
+import { prisma } from "~/lib/prisma"
 import { revalidatePath } from 'next/cache'
 
 export async function createCompany(userId: string, formData: FormData) {
   try {
     const company = await prisma.company.create({
       data: {
-        userId: userId,
-        companyName: formData.get('companyName') as string,
-        companyId: formData.get('companyId') as string,
-        companyType: formData.get('companyType') as string,
-        incorporationDate: formData.get('incorporationDate') as string,
-        shareholding: formData.get('shareholding') as string,
-        industry: formData.get('industry') as string,
-        yearsOperating: formData.get('yearsOperating') as string,
-        annual_revenue: formData.get('annual_revenue') as string,
-        employees: formData.get('employees') as string,
-        exports: formData.get('exports') === 'true',
-        address: formData.get('address') as string,
-        contact: formData.get('contact') as string,
-        taxCompliance: formData.get('taxCompliance') as string,
+        company_name: formData.get('company_name') as string,
+        company_id: formData.get('company_id') as string || null, // Make it nullable
+        sector: formData.get('sector') as string || null,
+        location: formData.get('location') as string || null,
+        revenue: formData.get('revenue') ? parseFloat(formData.get('revenue') as string) : null,
+        employees: formData.get('employees') ? parseInt(formData.get('employees') as string) : null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        user_companies: {
+          create: {
+            user_id: userId,
+            role: 'OWNER'
+          }
+        }
       },
     })
 
