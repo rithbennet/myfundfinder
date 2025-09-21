@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -5,6 +6,10 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // AWS Aurora PostgreSQL configuration
+  // For Aurora, consider enabling these optimizations:
+  // directUrl = env("DIRECT_URL") // For migrations
+  // relationMode = "prisma" // If using Aurora Serverless
 }
 
 model User {
@@ -13,6 +18,8 @@ model User {
   name      String?
   createdAt DateTime @default(now())
   company   CompanyProfile?
+  
+  @@map("users") // Explicit table naming for Aurora
 }
 
 model CompanyProfile {
@@ -22,15 +29,38 @@ model CompanyProfile {
   size      String
   region    String?
   keywords  String?
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("company_profiles")
 }
 
 model Grant {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   title       String
   description String?
   url         String
   sector      String?
   deadline    DateTime?
+  amount      String?
+  eligibility String?
+  provider    String?
+  embedding   String?  // For Aurora, consider using pgvector extension
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([sector])
+  @@index([deadline])
+  @@index([provider])
+  @@map("grants")
+}
+
+model ChatSession {
+  id        String   @id @default(cuid())
+  userId    String?
+  messages  Json[]   // Array of chat messages
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([userId])
+  @@map("chat_sessions")
 }
