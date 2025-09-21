@@ -7,30 +7,79 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model chat_sessions {
   id        String   @id @default(cuid())
+  userId    String
+  messages  Json[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model User {
+  id        String   @id // Cognito user ID (sub claim)
   email     String   @unique
   name      String?
+  onboarded Boolean  @default(false)
   createdAt DateTime @default(now())
-  company   CompanyProfile?
+  updatedAt DateTime @updatedAt
+  company   Company?
+  chatSessions chat_sessions[]
+  
+  @@map("users")
 }
 
-model CompanyProfile {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  sector    String
-  size      String
-  region    String?
-  keywords  String?
-  user      User     @relation(fields: [userId], references: [id])
-}
-
-model Grant {
-  id          String   @id @default(cuid())
-  title       String
+model agency {
+  id          String    @id @default(cuid())
+  name        String
+  contact     String
   description String?
-  url         String
-  sector      String?
-  deadline    DateTime?
+  fundings    funding[]
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Company {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id])
+
+  companyName       String
+  companyId         String   @unique // SSM Reg. No.
+  companyType       String
+  incorporationDate String
+  shareholding      String
+  industry          String
+  yearsOperating    String
+  annual_revenue    String
+  employees         String
+  exports           Boolean
+  address           String
+  contact           String
+  taxCompliance     String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model funding {
+  id           String    @id @default(cuid())
+  title        String
+  description  String?
+  url          String
+  sector       String?
+  deadline     DateTime?
+  amount       String?
+  eligibility  String?
+  embedding    String?
+  requiredDocs String[]   // array of required documents
+  agencyId     String
+  agency       agency     @relation(fields: [agencyId], references: [id])
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([deadline])
+  @@index([agencyId])
+  @@index([sector])
 }
