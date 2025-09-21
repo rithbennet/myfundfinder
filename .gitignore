@@ -61,3 +61,5 @@ __pycache__/
 *.pyo
 *.pyd
 
+package-lock.json
+pnpm-lock.yaml
