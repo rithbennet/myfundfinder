@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -5,6 +6,10 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // AWS Aurora PostgreSQL configuration
+  // For Aurora, consider enabling these optimizations:
+  // directUrl = env("DIRECT_URL") // For migrations
+  // relationMode = "prisma" // If using Aurora Serverless
 }
 
 model chat_sessions {

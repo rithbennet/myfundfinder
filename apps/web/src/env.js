@@ -11,6 +11,11 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
+    COGNITO_CLIENT_ID: z.string(),
+    COGNITO_CLIENT_SECRET: z.string(),
+    COGNITO_DOMAIN: z.string(),
+    COGNITO_REGION: z.string(),
+    COGNITO_USERPOOL_ID: z.string(),
   },
 
   /**
@@ -29,6 +34,11 @@ export const env = createEnv({
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
+    COGNITO_CLIENT_ID: process.env.COGNITO_CLIENT_ID,
+    COGNITO_CLIENT_SECRET: process.env.COGNITO_CLIENT_SECRET,
+    COGNITO_DOMAIN: process.env.COGNITO_DOMAIN,
+    COGNITO_REGION: process.env.COGNITO_REGION,
+    COGNITO_USERPOOL_ID: process.env.COGNITO_USERPOOL_ID,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

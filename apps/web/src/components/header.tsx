@@ -1,7 +1,14 @@
+"use client"
+
 import { Button } from "./ui/button"
 import Link from "next/link"
+import { useAuth } from "~/feature/auth/model/AuthContext"
+import { useAuthActions } from "~/feature/auth/model/hooks"
 
 export function Header() {
+  const { user } = useAuth()
+  const { signOut } = useAuthActions()
+
   return (
     <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -48,12 +55,26 @@ export function Header() {
           </nav>
 
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-              Sign In
-            </Button>
-            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-              Get Started
-            </Button>
+            {user ? (
+              <>
+
+                <Button onClick={signOut} variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                  Sign Out
+                </Button>
+                <Button asChild size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                  <Link href="/dashboard">Dashboard</Link>
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                  <Link href="/sign-in">Sign In</Link>
+                </Button>
+                <Button asChild size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                  <Link href="/sign-in">Get Started</Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>
