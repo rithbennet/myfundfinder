@@ -1,0 +1,25 @@
+version: 1
+applications:
+  - appRoot: apps/web
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - echo "DATABASE_URL=$DATABASE_URL" > .env
+            - echo "COGNITO_CLIENT_ID=$COGNITO_CLIENT_ID" >> .env
+            - echo "COGNITO_CLIENT_SECRET=$COGNITO_CLIENT_SECRET" >> .env
+            - echo "COGNITO_DOMAIN=$COGNITO_DOMAIN" >> .env
+            - echo "COGNITO_REGION=$COGNITO_REGION" >> .env
+            - echo "COGNITO_USERPOOL_ID=$COGNITO_USERPOOL_ID" >> .env
+            - npm install --legacy-peer-deps
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: .next
+        files:
+          - "**/*"
+      cache:
+        paths:
+          - node_modules/**/*
+          - .next/cache/**/*

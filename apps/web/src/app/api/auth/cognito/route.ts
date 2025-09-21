@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import {
   CognitoIdentityProviderClient,
   SignUpCommand,
@@ -19,7 +20,10 @@ const CLIENT_ID = process.env.COGNITO_CLIENT_ID!;
 const CLIENT_SECRET = process.env.COGNITO_CLIENT_SECRET!;
 
 // Cache user data to avoid repeated Cognito API calls
-const userDataCache = new Map<string, { username: string; email: string; id: string }>();
+const userDataCache = new Map<
+  string,
+  { username: string; email: string; id: string }
+>();
 
 // Generate SECRET_HASH for Cognito requests
 const generateSecretHash = (username: string): string => {
@@ -30,8 +34,12 @@ const generateSecretHash = (username: string): string => {
 
 // Extract user data from Cognito response
 const extractUserData = (userResult: any) => {
-  const cognitoUserId = userResult.UserAttributes?.find((attr: any) => attr.Name === "sub")?.Value!;
-  const email = userResult.UserAttributes?.find((attr: any) => attr.Name === "email")?.Value!;
+  const cognitoUserId = userResult.UserAttributes?.find(
+    (attr: any) => attr.Name === "sub",
+  )?.Value!;
+  const email = userResult.UserAttributes?.find(
+    (attr: any) => attr.Name === "email",
+  )?.Value!;
   return {
     username: userResult.Username!,
     email,
@@ -79,7 +87,7 @@ export async function POST(request: NextRequest) {
           },
         });
         const authResult = await client.send(authCommand);
-        
+
         // Only get user details and ensure user exists once per session
         if (authResult.AuthenticationResult?.AccessToken) {
           const getUserCommand = new GetUserCommand({
@@ -87,12 +95,31 @@ export async function POST(request: NextRequest) {
           });
           const userResult = await client.send(getUserCommand);
           const userData = extractUserData(userResult);
-          
+
           // Cache user data and ensure user exists in DB
           userDataCache.set(userData.id, userData);
           await ensureUser(userData.id, userData.email);
+
+          // 🔑 set cookie for session
+          const response = NextResponse.json({
+            success: true,
+            user: userData,
+            tokens: authResult.AuthenticationResult,
+          });
+          response.cookies.set(
+            "accessToken",
+            authResult.AuthenticationResult.AccessToken,
+            {
+              httpOnly: true,
+              secure: process.env.NODE_ENV === "production",
+              sameSite: "lax",
+              path: "/",
+            },
+          );
+
+          return response;
         }
-        
+
         return NextResponse.json({
           success: true,
           tokens: authResult.AuthenticationResult,
@@ -120,10 +147,10 @@ export async function POST(request: NextRequest) {
 
       case "getUser":
         // Check cache first to avoid Cognito API call
-        const cachedUser = Array.from(userDataCache.values()).find(user => 
-          user.email === data.email || user.id === data.userId
+        const cachedUser = Array.from(userDataCache.values()).find(
+          (user) => user.email === data.email || user.id === data.userId,
         );
-        
+
         if (cachedUser) {
           return NextResponse.json({ success: true, user: cachedUser });
         }
@@ -133,11 +160,11 @@ export async function POST(request: NextRequest) {
         });
         const userResult = await client.send(getUserCommand);
         const userData = extractUserData(userResult);
-        
+
         // Cache user data and ensure user exists in DB
         userDataCache.set(userData.id, userData);
         await ensureUser(userData.id, userData.email);
-        
+
         return NextResponse.json({ success: true, user: userData });
 
       default:

@@ -1,11 +1,13 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  extensions = [pgvector(map: "vector")]
   // AWS Aurora PostgreSQL configuration
   // For Aurora, consider enabling these optimizations:
   // directUrl = env("DIRECT_URL") // For migrations
@@ -13,57 +15,111 @@ datasource db {
 }
 
 model User {
-  id        String   @id // Cognito user ID (sub claim)
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  company   CompanyProfile?
-  chatSessions ChatSession[]
-  
+  id            String        @id
+  email         String        @unique
+  name          String?
+  onboarded     Boolean       @default(false)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  chatSessions  ChatSession[]
+  companies     UserCompany[]
+
   @@map("users")
 }
 
-model CompanyProfile {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  sector    String
-  size      String
-  region    String?
-  keywords  String?
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  @@map("company_profiles")
+model Company {
+  id               String        @id @default(cuid())
+  companyName       String
+  companyId         String       @unique
+  companyType       String
+  incorporationDate DateTime
+  shareholding      String
+  industry          String
+  yearsOperating    Int
+  annualRevenue     Float?
+  employees         Int
+  exports           Boolean
+  address           String
+  contact           String
+  taxCompliance     Boolean
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  users             UserCompany[]
 }
 
-model Grant {
-  id          String    @id @default(cuid())
-  title       String
-  description String?
-  url         String
-  sector      String?
-  deadline    DateTime?
-  amount      String?
-  eligibility String?
-  provider    String?
-  embedding   String?  // For Aurora, consider using pgvector extension
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  @@index([sector])
-  @@index([deadline])
-  @@index([provider])
-  @@map("grants")
+model UserCompany {
+  userId    String
+  companyId String
+  role      String?
+
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@id([userId, companyId])
 }
 
 model ChatSession {
-  id        String   @id @default(cuid())
+  id        String       @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  messages  Json[]   // Array of chat messages
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages  ChatMessage[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+model ChatMessage {
+  id          String      @id @default(cuid())
+  sessionId   String
+  session     ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role        String      // system, user, assistant
+  content     String
+  tokens      Int?
+  createdAt   DateTime @default(now())
+}
+
+model Agency {
+  id          String    @id @default(cuid())
+  name        String
+  contact     String
+  description String?
+  fundings    Funding[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Funding {
+  id           String    @id @default(cuid())
+  title        String
+  description  String?
+  url          String
+  sector       String?
+  deadline     DateTime?
+  amount       Float?
+  eligibility  String?
+  requiredDocs String[]
+  agencyId     String
+  agency       Agency    @relation(fields: [agencyId], references: [id])
+  chunks       FundingChunk[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([deadline])
+  @@index([agencyId])
+  @@index([sector])
+}
+
+model FundingChunk {
+  id        String   @id @default(cuid())
+  fundingId String
+  funding   Funding  @relation(fields: [fundingId], references: [id])
+  chunkText String
+
+  // pgvector column (Prisma will ignore type, but it's in DB)
+  embedding Unsupported("vector")?
+
+  pageNo    Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
-  @@index([userId])
-  @@map("chat_sessions")
 }

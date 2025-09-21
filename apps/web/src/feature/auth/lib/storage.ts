@@ -1,30 +1,36 @@
-const TOKENS_KEY = 'cognito_tokens';
+interface TokenData {
+  AccessToken: string;
+  IdToken: string;
+  RefreshToken: string;
+}
+
+const TOKENS_KEY = "cognito_tokens";
 
 export const tokenStorage = {
-  get: () => {
-    if (typeof window === 'undefined') return null;
+  get: (): TokenData | null => {
+    if (typeof window === "undefined") return null;
     try {
       const tokens = sessionStorage.getItem(TOKENS_KEY);
-      return tokens ? JSON.parse(tokens) : null;
+      return tokens ? (JSON.parse(tokens) as TokenData) : null;
     } catch {
       return null;
     }
   },
 
-  set: (tokens: any) => {
-    if (typeof window !== 'undefined') {
+  set: (tokens: TokenData): void => {
+    if (typeof window !== "undefined") {
       sessionStorage.setItem(TOKENS_KEY, JSON.stringify(tokens));
     }
   },
 
-  clear: () => {
-    if (typeof window !== 'undefined') {
+  clear: (): void => {
+    if (typeof window !== "undefined") {
       sessionStorage.removeItem(TOKENS_KEY);
     }
   },
 
-  isAuthenticated: () => {
+  isAuthenticated: (): boolean => {
     const tokens = tokenStorage.get();
-    return tokens && tokens.AccessToken;
+    return Boolean(tokens?.AccessToken);
   },
 };

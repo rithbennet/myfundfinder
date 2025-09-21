@@ -1,5 +1,5 @@
 import { Button } from "./ui/button"
-import { Badge } from "lucide-react"
+import { Badge } from "./ui/badge"
 
 export function HeroSection() {
   return (
