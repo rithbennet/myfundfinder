@@ -5,21 +5,15 @@ applications:
       phases:
         preBuild:
           commands:
-            - export DATABASE_URL="$DATABASE_URL"
-            - export COGNITO_CLIENT_ID="$COGNITO_CLIENT_ID"
-            - export COGNITO_CLIENT_SECRET="$COGNITO_CLIENT_SECRET"
-            - export COGNITO_DOMAIN="$COGNITO_DOMAIN"
-            - export COGNITO_REGION="$COGNITO_REGION"
-            - export COGNITO_USERPOOL_ID="$COGNITO_USERPOOL_ID"
+            - echo "DATABASE_URL=$DATABASE_URL" > .env
+            - echo "COGNITO_CLIENT_ID=$COGNITO_CLIENT_ID" >> .env
+            - echo "COGNITO_CLIENT_SECRET=$COGNITO_CLIENT_SECRET" >> .env
+            - echo "COGNITO_DOMAIN=$COGNITO_DOMAIN" >> .env
+            - echo "COGNITO_REGION=$COGNITO_REGION" >> .env
+            - echo "COGNITO_USERPOOL_ID=$COGNITO_USERPOOL_ID" >> .env
             - npm install --legacy-peer-deps
         build:
           commands:
-            - export DATABASE_URL="$DATABASE_URL"
-            - export COGNITO_CLIENT_ID="$COGNITO_CLIENT_ID"
-            - export COGNITO_CLIENT_SECRET="$COGNITO_CLIENT_SECRET"
-            - export COGNITO_DOMAIN="$COGNITO_DOMAIN"
-            - export COGNITO_REGION="$COGNITO_REGION"
-            - export COGNITO_USERPOOL_ID="$COGNITO_USERPOOL_ID"
             - npm run build
       artifacts:
         baseDirectory: .next
