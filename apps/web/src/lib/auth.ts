@@ -1,21 +1,27 @@
-export const getStoredTokens = () => {
-  if (typeof window === 'undefined') return null;
-  
+interface TokenData {
+  AccessToken: string;
+  IdToken: string;
+  RefreshToken: string;
+}
+
+export const getStoredTokens = (): TokenData | null => {
+  if (typeof window === "undefined") return null;
+
   try {
-    const tokens = localStorage.getItem('cognito_tokens');
-    return tokens ? JSON.parse(tokens) : null;
+    const tokens = localStorage.getItem("cognito_tokens");
+    return tokens ? (JSON.parse(tokens) as TokenData) : null;
   } catch {
     return null;
   }
 };
 
-export const isAuthenticated = () => {
+export const isAuthenticated = (): boolean => {
   const tokens = getStoredTokens();
-  return tokens && tokens.AccessToken;
+  return Boolean(tokens?.AccessToken);
 };
 
-export const clearTokens = () => {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('cognito_tokens');
+export const clearTokens = (): void => {
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("cognito_tokens");
   }
 };

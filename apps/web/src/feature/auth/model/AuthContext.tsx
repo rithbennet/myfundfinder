@@ -45,7 +45,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       const result = await authApi.getUser(tokens.AccessToken);
-      if (result.success) {
+      if (result.success && result.user) {
         userCache = result.user;
         lastFetchTime = now;
         setUser(result.user);

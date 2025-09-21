@@ -72,10 +72,10 @@ export function SignUpForm({ onSuccess }: SignUpFormProps) {
         <div className="text-center space-y-2">
           <h3 className="text-lg font-semibold">Verify your email</h3>
           <p className="text-sm text-muted-foreground">
-            We've sent a verification code to <strong>{formData.email}</strong>
+            We&apos;ve sent a verification code to <strong>{formData.email}</strong>
           </p>
         </div>
-        
+
         <form onSubmit={handleConfirm} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="code">Verification Code</Label>
@@ -91,9 +91,9 @@ export function SignUpForm({ onSuccess }: SignUpFormProps) {
             />
           </div>
           {error && <p className="text-sm text-red-500">{error}</p>}
-          <Button 
-            type="submit" 
-            className="w-full" 
+          <Button
+            type="submit"
+            className="w-full"
             disabled={loading || formData.code.length !== 6}
           >
             {loading ? "Verifying..." : "Verify Account"}
@@ -101,7 +101,7 @@ export function SignUpForm({ onSuccess }: SignUpFormProps) {
         </form>
 
         <div className="text-center space-y-2">
-          <p className="text-sm text-muted-foreground">Didn't receive the code?</p>
+          <p className="text-sm text-muted-foreground">Didn&apos;t receive the code?</p>
           <Button variant="ghost" onClick={handleResendCode} disabled={loading}>
             Resend code
           </Button>
@@ -158,15 +158,14 @@ export function SignUpForm({ onSuccess }: SignUpFormProps) {
               {[1, 2, 3, 4, 5].map((level) => (
                 <div
                   key={level}
-                  className={`h-1 flex-1 rounded-full ${
-                    passwordStrength.score >= level
+                  className={`h-1 flex-1 rounded-full ${passwordStrength.score >= level
                       ? passwordStrength.score <= 2
                         ? "bg-red-500"
                         : passwordStrength.score <= 3
                           ? "bg-yellow-500"
                           : "bg-green-500"
                       : "bg-muted"
-                  }`}
+                    }`}
                 />
               ))}
             </div>
@@ -227,7 +226,7 @@ export function SignUpForm({ onSuccess }: SignUpFormProps) {
             ) : (
               <>
                 <X className="h-3 w-3 text-red-500" />
-                <span className="text-red-600">Passwords don't match</span>
+                <span className="text-red-600">Passwords don&apos;t match</span>
               </>
             )}
           </div>
@@ -236,9 +235,9 @@ export function SignUpForm({ onSuccess }: SignUpFormProps) {
 
       {error && <p className="text-sm text-red-500">{error}</p>}
 
-      <Button 
-        type="submit" 
-        className="w-full" 
+      <Button
+        type="submit"
+        className="w-full"
         disabled={loading || passwordStrength.score < 3 || !passwordsMatch}
       >
         {loading ? "Creating account..." : "Create account"}
