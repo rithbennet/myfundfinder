@@ -4,29 +4,30 @@ export function HowItWorks() {
   const steps = [
     {
       step: "01",
-      title: "Complete Your Profile",
+      title: "Upload Your Business Info",
       description:
-        "Tell us about your business, funding needs, and financial situation through our secure 5-minute application.",
+        "Easily provide your company profile or business plan. Our system securely extracts key details like sector, size, and funding goals.",
     },
     {
       step: "02",
-      title: "Get Matched Instantly",
+      title: "AI-Powered Matching",
       description:
-        "Our AI analyzes your profile and matches you with the most suitable funding options from our network of verified lenders.",
+        "Our AI analyzes your profile and automatically matches you with the most relevant government grants and financing options.",
     },
     {
       step: "03",
-      title: "Compare & Choose",
+      title: "Review Eligible Programs",
       description:
-        "Review personalized offers, compare terms, and select the funding option that best fits your business needs.",
+        "See a personalized shortlist of funding opportunities. Understand why each program is a match and what documents are required.",
     },
     {
       step: "04",
-      title: "Secure Your Funding",
+      title: "Apply with Confidence",
       description:
-        "Complete the application process with your chosen lender and receive funding approval in as little as 72 hours.",
+        "Follow guided next steps to connect with the right agency and submit your application seamlessly.",
     },
-  ]
+  ];
+
 
   return (
     <section id="how-it-works" className="py-20 sm:py-32 bg-background">

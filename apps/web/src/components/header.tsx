@@ -34,12 +34,6 @@ export function Header() {
                 🤖 AI Assistant
               </Link>
               <a
-                href="#solutions"
-                className="text-muted-foreground hover:text-foreground px-3 py-2 text-sm font-medium transition-colors"
-              >
-                Solutions
-              </a>
-              <a
                 href="#how-it-works"
                 className="text-muted-foreground hover:text-foreground px-3 py-2 text-sm font-medium transition-colors"
               >

@@ -8,11 +8,11 @@ export function CTASection() {
         <Card className="mx-auto max-w-4xl border-border bg-card">
           <CardContent className="p-12 text-center">
             <h2 className="text-3xl font-bold tracking-tight text-card-foreground sm:text-4xl">
-              {"Ready to Secure Your Business Funding?"}
+              {"Unlock the Right Funding for Your Business"}
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
               {
-                "Join thousands of successful SMEs who have found the perfect funding match. Start your application today and get matched with suitable lenders in minutes."
+                "Leverage cutting-edge AI to match your business profile with the most relevant grants and financing options in Malaysia. Simple, transparent, and built for growth."
               }
             </p>
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -21,9 +21,6 @@ export function CTASection() {
                 className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-3 w-full sm:w-auto"
               >
                 {"Start Your Application"}
-              </Button>
-              <Button variant="outline" size="lg" className="px-8 py-3 w-full sm:w-auto bg-transparent">
-                {"Speak to an Expert"}
               </Button>
             </div>
             <p className="mt-6 text-sm text-muted-foreground">

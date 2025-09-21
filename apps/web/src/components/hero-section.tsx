@@ -12,13 +12,13 @@ export function HeroSection() {
           </Badge>
 
           <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-            {"Smart Funding Matches for "}
-            <span className="text-accent">{"Growing Businesses"}</span>
+            {"AI-Driven Funding Matcher for "}
+            <span className="text-accent">{"High-Growth SMEs"}</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
             {
-              "Connect your SME with the right funding opportunities. Our AI-powered platform matches your business profile with suitable lenders, grants, and investment options in minutes."
+              "Leverage proprietary AI models that analyze your business DNA, sector dynamics, and capital landscape to deliver precision-matched funding—grants, investors, and lenders—in real time."
             }
           </p>
 
@@ -28,9 +28,6 @@ export function HeroSection() {
               <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
-            </Button>
-            <Button variant="outline" size="lg" className="px-8 py-3 bg-transparent">
-              {"View Success Stories"}
             </Button>
           </div>
         </div>

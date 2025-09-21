@@ -1,125 +1,122 @@
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  extensions = [pgvector(map: "vector")]
-  // AWS Aurora PostgreSQL configuration
-  // For Aurora, consider enabling these optimizations:
-  // directUrl = env("DIRECT_URL") // For migrations
-  // relationMode = "prisma" // If using Aurora Serverless
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [vector]
 }
 
 model User {
-  id            String        @id
-  email         String        @unique
-  name          String?
-  onboarded     Boolean       @default(false)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-
-  chatSessions  ChatSession[]
-  companies     UserCompany[]
+  id             String           @id
+  email          String           @unique
+  name           String?
+  onboarded      Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  created_at     DateTime         @default(now()) @db.Timestamp(6)
+  updated_at     DateTime         @default(now()) @db.Timestamp(6)
+  chat_sessions  chat_sessions[]
+  user_companies user_companies[]
 
   @@map("users")
 }
 
 model Company {
-  id               String        @id @default(cuid())
-  companyName       String
-  companyId         String       @unique
-  companyType       String
-  incorporationDate DateTime
-  shareholding      String
-  industry          String
-  yearsOperating    Int
-  annualRevenue     Float?
-  employees         Int
-  exports           Boolean
-  address           String
-  contact           String
-  taxCompliance     Boolean
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
+  id             Int              @id(map: "companies_new_pkey") @default(autoincrement())
+  company_name   String           @db.VarChar(255)
+  company_id     String?          @unique(map: "companies_new_company_id_key") @db.VarChar(100)
+  sector         String?          @db.VarChar(100)
+  location       String?          @db.VarChar(100)
+  revenue        Float?
+  employees      Int?
+  created_at     DateTime         @db.Timestamp(6)
+  updated_at     DateTime         @db.Timestamp(6)
+  user_companies user_companies[]
 
-  users             UserCompany[]
-}
-
-model UserCompany {
-  userId    String
-  companyId String
-  role      String?
-
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  @@id([userId, companyId])
-}
-
-model ChatSession {
-  id        String       @id @default(cuid())
-  userId    String
-  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  messages  ChatMessage[]
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-}
-
-model ChatMessage {
-  id          String      @id @default(cuid())
-  sessionId   String
-  session     ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  role        String      // system, user, assistant
-  content     String
-  tokens      Int?
-  createdAt   DateTime @default(now())
+  @@map("companies")
 }
 
 model Agency {
-  id          String    @id @default(cuid())
-  name        String
-  contact     String
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  contact     String?   @db.VarChar(255)
   description String?
+  createdAt   DateTime  @map("created_at") @db.Timestamp(6)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamp(6)
   fundings    Funding[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+
+  @@map("agencies")
 }
 
 model Funding {
-  id           String    @id @default(cuid())
-  title        String
-  description  String?
-  url          String
-  sector       String?
-  deadline     DateTime?
-  amount       Float?
-  eligibility  String?
-  requiredDocs String[]
-  agencyId     String
-  agency       Agency    @relation(fields: [agencyId], references: [id])
-  chunks       FundingChunk[]
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id             Int              @id @default(autoincrement())
+  title          String           @db.VarChar(500)
+  description    String?
+  sector         String?          @db.VarChar(100)
+  deadline       DateTime?        @db.Timestamp(6)
+  amount         Float?
+  eligibility    String?
+  requiredDocs   String?          @map("required_docs")
+  agencyId       Int?             @map("agency_id")
+  createdAt      DateTime         @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime         @updatedAt @map("updated_at") @db.Timestamp(6)
+  s3_keys        String[]         @db.VarChar
+  funding_chunks funding_chunks[]
+  agency         Agency?          @relation(fields: [agencyId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([deadline])
-  @@index([agencyId])
-  @@index([sector])
+  @@map("fundings")
 }
 
-model FundingChunk {
-  id        String   @id @default(cuid())
-  fundingId String
-  funding   Funding  @relation(fields: [fundingId], references: [id])
-  chunkText String
+model alembic_version {
+  version_num String @id(map: "alembic_version_pkc") @db.VarChar(32)
+}
 
-  // pgvector column (Prisma will ignore type, but it's in DB)
-  embedding Unsupported("vector")?
+model chat_messages {
+  id            Int           @id @default(autoincrement())
+  session_id    String        @db.VarChar
+  role          String        @db.VarChar(20)
+  content       String
+  tokens        Int?
+  created_at    DateTime      @db.Timestamp(6)
+  updated_at    DateTime      @db.Timestamp(6)
+  chat_sessions chat_sessions @relation(fields: [session_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
 
-  pageNo    Int?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model chat_sessions {
+  id            String          @id
+  userId        String
+  messages      Json[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime
+  user_id       String?         @db.VarChar
+  created_at    DateTime        @default(now()) @db.Timestamp(6)
+  updated_at    DateTime        @default(now()) @db.Timestamp(6)
+  chat_messages chat_messages[]
+  users         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model funding_chunks {
+  id         Int                    @id @default(autoincrement())
+  funding_id Int
+  chunk_text String
+  embedding  Unsupported("vector")?
+  page_no    Int?
+  created_at DateTime               @db.Timestamp(6)
+  updated_at DateTime               @db.Timestamp(6)
+  fundings   Funding                @relation(fields: [funding_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model user_companies {
+  user_id    String  @db.VarChar
+  company_id Int
+  role       String? @db.VarChar(50)
+  companies  Company @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users      User    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([user_id, company_id])
 }
