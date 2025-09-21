@@ -1,0 +1,16 @@
+{
+  "id": 8,
+  "title": "PENJANA Tourism Financing (PTF) Facility",
+  "description": "BNM facility first introduced in July 2020 as a relief measure for tourism businesses affected by COVID-19, and reoriented in 2025 into a non-relief facility to encourage SME expansion and investment in tourism ahead of Visit Malaysia Year 2026. Provides financing up to RM500,000 for eligible tourism-related SMEs.",
+  "sector": "SME Financing, Tourism",
+  "deadline": null,
+  "amount": 500000.0,
+  "eligibility": "SMEs involved in tourism sectors or activities listed under the National Tourism Policy 2020–2030. Simplified eligibility criteria apply.",
+  "requiredDocs": "Applications submitted to participating financial institutions (PFIs); supporting documentation as required under PFIs’ credit assessment.",
+  "agencyId": null,
+  "createdAt": "2025-09-21T00:00:00Z",
+  "updatedAt": "2025-09-21T00:00:00Z",
+  "s3_keys": [],
+  "funding_chunks": [],
+  "agency": null
+}

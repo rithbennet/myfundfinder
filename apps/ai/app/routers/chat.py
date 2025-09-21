@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 from ..db import get_db
-from ..models.models import User, Company, ChatSession, ChatMessage, Funding, FundingChunk
+from ..models.models import User, Company, ChatSession, ChatMessage, Funding, FundingChunk, UserCompany
 from ..schemas.schemas import ChatRequest, ChatResponse, ChatSession as ChatSessionSchema, ChatMessage as ChatMessageSchema
 from ..routers.auth import get_current_user, verify_company_access
 from ..services.chat import ChatService
@@ -33,38 +33,30 @@ async def chat(
     
     print(f"🏢 User {current_user.email} querying for company: {company.company_name} (Sector: {company.sector})")
     
-    # Initialize services
-    chat_service = ChatService(db)
-    embedding_service = EmbeddingService()
-    grant_filter = GrantFilterService(db)
+    # Use tool-based chat service
+    from ..services.chat_tools import ToolBasedChatService
+    tool_chat_service = ToolBasedChatService(db)
     
     # Create or get chat session
-    session = chat_service.get_or_create_session(current_user.id)
+    session = tool_chat_service.get_or_create_session(current_user.id)
     
     # Save user message
-    chat_service.save_message(session.id, "user", request.message)
+    tool_chat_service.save_message(session.id, "user", request.message)
     
-    # Filter eligible grants based on company profile
-    eligible_grants = grant_filter.filter_grants(company)
-    print(f"📋 Found {len(eligible_grants)} eligible grants for {company.sector} sector")
-    
-    # Vector search for relevant chunks
-    relevant_chunks = await chat_service.vector_search(request.message, eligible_grants)
-    
-    # Generate response using LLM
-    response = await chat_service.generate_response(
+    # Generate response using tools and conversation context
+    response = await tool_chat_service.generate_response_with_tools(
         request.message, 
-        relevant_chunks, 
-        company
+        company, 
+        session.id
     )
     
     # Save assistant response
-    chat_service.save_message(session.id, "assistant", response)
+    tool_chat_service.save_message(session.id, "assistant", response)
     
     return ChatResponse(
         response=response,
         session_id=session.id,
-        sources=[chunk.funding.title for chunk in relevant_chunks]
+        sources=[]  # Tools will handle source attribution
     )
 
 @router.get("/sessions", response_model=List[ChatSessionSchema])
