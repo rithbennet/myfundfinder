@@ -6,7 +6,7 @@ export function AuthHeader() {
             <Link href="/" className="text-2xl font-bold text-foreground">
                 MYFundFinder
             </Link>
-            <div className="text-sm text-muted-foreground">Smart Funding Solutions</div>
+            <div className="text-sm text-muted-foreground">Checa404</div>
         </div>
     )
 }
